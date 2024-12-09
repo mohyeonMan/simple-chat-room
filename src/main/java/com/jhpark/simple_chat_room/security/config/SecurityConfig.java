@@ -41,7 +41,6 @@ public class SecurityConfig {
                 })
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/api/users/**",
                                 "/swagger-ui/**", // Swagger UI 접근 허용
                                 "/v3/api-docs/**", // Swagger API 문서 접근 허용
                                 "/swagger-resources/**", // Swagger 자원 접근 허용
