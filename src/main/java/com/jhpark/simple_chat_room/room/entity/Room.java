@@ -18,8 +18,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.cglib.core.Local;
-
 @Entity
 @Data
 @NoArgsConstructor
@@ -37,7 +35,7 @@ public class Room {
 
     @Column(nullable = false)
     @Default
-    private LocalDateTime createdAt  = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(nullable = true)
     private LocalDateTime deletedAt;

@@ -82,6 +82,14 @@ public class RoomService {
         roomEntry.setLeftAt(LocalDateTime.now());
         roomEntryRepository.save(roomEntry);
 
+        room.getEntries().stream()
+                .filter(entry -> entry.getLeftAt() == null)
+                .findAny()
+                .orElseGet(() -> {
+                    room.setDeletedAt(LocalDateTime.now());
+                    return null; 
+                });
+
     }
 
     
@@ -130,6 +138,8 @@ public class RoomService {
      */
     @Transactional(readOnly = true)
     public List<Long> getParticipantsInRoom(Long roomId) {
-        return null;
+        return roomEntryRepository.findByRoomIdAndLeftAtIsNull(roomId).stream()
+                .map(RoomEntry::getUserId)
+                .toList();
     }
 }
