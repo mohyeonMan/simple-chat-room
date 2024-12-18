@@ -7,12 +7,11 @@ public class SecurityUtil {
 
     public static Long getCurrentUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof Long) {
+        if (authentication != null && authentication.getPrincipal() instanceof String) {
 
-            return ((Long) authentication.getPrincipal());
+            return Long.parseLong((String)authentication.getPrincipal());
             
         }
-        
         throw new RuntimeException("인증되지 않은 사용자입니다.");
     }
 

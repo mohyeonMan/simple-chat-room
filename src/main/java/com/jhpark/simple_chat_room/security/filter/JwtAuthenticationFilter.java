@@ -2,6 +2,7 @@ package com.jhpark.simple_chat_room.security.filter;
 
 import java.io.IOException;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,14 +18,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String AUTH_PREFIX = "Bearer";
+    private static final String AUTH_PREFIX = "Bearer ";
 
     private final AuthService authService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
+        final String header = request.getHeader("Authorization");
 
         if (header != null && header.startsWith(AUTH_PREFIX)) {
             final String token = header.substring(AUTH_PREFIX.length());
