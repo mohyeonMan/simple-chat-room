@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
                     ExceptionResponse.builder()
-                    .message(ex.getMessage())
+                    .message(ex.getClass().toString())
                     .build()
                 );
     }

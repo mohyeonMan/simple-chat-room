@@ -40,7 +40,6 @@ public class RoomService {
         validationService.validateIsUserInvitedItselves(currentUserId, friendIds);
         validationService.validateIsFriends(currentUserId, friendIds);
 
-        
         final Room savedRoom = roomRepository.save(Room.builder()
         .roomName(roomName)
         .createdAt(LocalDateTime.now())
@@ -57,6 +56,8 @@ public class RoomService {
 
         });
 
+        //redis에 추가.
+
         return CreateRoomResponse.builder()
                 .roomId(savedRoom.getId())
                 .roomName(savedRoom.getRoomName())
@@ -72,7 +73,7 @@ public class RoomService {
 
         final Long currentUserId = SecurityUtil.getCurrentUserId();
 
-        final Room room =roomRepository.findById(roomId).orElse(null);
+        final Room room = roomRepository.findByIdAndDeletedAtIsNull(roomId).orElse(null);
         validationService.validateIsRoomExist(room);
 
         final RoomEntry roomEntry = roomEntryRepository.findByRoomIdAndUserIdAndLeftAtIsNull(roomId, currentUserId)
@@ -82,6 +83,8 @@ public class RoomService {
         roomEntry.setLeftAt(LocalDateTime.now());
         roomEntryRepository.save(roomEntry);
 
+        //redis에 갱신
+
         room.getEntries().stream()
                 .filter(entry -> entry.getLeftAt() == null)
                 .findAny()
@@ -89,6 +92,10 @@ public class RoomService {
                     room.setDeletedAt(LocalDateTime.now());
                     return null; 
                 });
+
+        //redis에서 제거.
+
+        
 
     }
 
@@ -103,7 +110,7 @@ public class RoomService {
 
         final Long currentUserId = SecurityUtil.getCurrentUserId();
 
-        final Room room = roomRepository.findById(roomId).orElse(null);
+        final Room room = roomRepository.findByIdAndDeletedAtIsNull(roomId).orElse(null);
 
         validationService.validateIsFriends(currentUserId, friendIds);
         validationService.validateIsUserInvitedNoOne(friendIds);
@@ -125,6 +132,8 @@ public class RoomService {
             return roomEntry.getUserId();
         }).toList();
 
+        //redis에 추가해줄것.
+
         return InviteUserResponse.builder()
                 .roomId(roomId)
                 .invitedUserIds(invitedUserIds)
@@ -137,9 +146,20 @@ public class RoomService {
      * @return 참가자 목록 (userId 리스트)
      */
     @Transactional(readOnly = true)
-    public List<Long> getParticipantsInRoom(Long roomId) {
-        return roomEntryRepository.findByRoomIdAndLeftAtIsNull(roomId).stream()
+    public List<Long> getParticipantsInRoom(final Long roomId) {
+
+        final Long currentUserId = SecurityUtil.getCurrentUserId();
+
+        validationService.validateIsRoomExist(roomRepository.findByIdAndDeletedAtIsNull(roomId).orElse(null));
+        validationService.validateIsUserJoined(roomEntryRepository.findByRoomIdAndUserIdAndLeftAtIsNull(roomId, currentUserId).orElse(null));
+
+        final List<Long> userIds = roomEntryRepository.findByRoomIdAndLeftAtIsNull(roomId).stream()
                 .map(RoomEntry::getUserId)
                 .toList();
+
+        //redis에 갱신
+
+        
+        return userIds;
     }
 }
