@@ -1,10 +1,16 @@
 package com.jhpark.simple_chat_room.redis.config;
 
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -20,6 +26,12 @@ public class RedisConfig {
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
 
         return template;
+    }
+
+    @Bean
+    public RedisScript<List> synchronizeRoomScript() {
+        Resource script = new ClassPathResource("scripts/synchronizeRoomScript.lua");
+        return RedisScript.of(script,List.class);
     }
 
 }

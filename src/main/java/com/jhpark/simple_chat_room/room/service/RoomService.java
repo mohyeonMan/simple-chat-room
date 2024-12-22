@@ -1,5 +1,6 @@
 package com.jhpark.simple_chat_room.room.service;
 
+import com.jhpark.simple_chat_room.redis.service.RedisSynchronizer;
 import com.jhpark.simple_chat_room.room.dto.response.CreateRoomResponse;
 import com.jhpark.simple_chat_room.room.dto.response.InviteUserResponse;
 import com.jhpark.simple_chat_room.room.entity.Room;
@@ -23,6 +24,7 @@ public class RoomService {
     private final RoomValidationService validationService;
     private final RoomRepository roomRepository;
     private final RoomEntryRepository roomEntryRepository;
+    private final RedisSynchronizer redisSynchronizer;
 
 
     /**
@@ -57,6 +59,7 @@ public class RoomService {
         });
 
         //redis에 추가.
+        redisSynchronizer.synchronizeUser(savedRoom.getId(), friendIds);
 
         return CreateRoomResponse.builder()
                 .roomId(savedRoom.getId())
@@ -133,6 +136,7 @@ public class RoomService {
         }).toList();
 
         //redis에 추가해줄것.
+        redisSynchronizer.addUser(roomId, currentUserId);
 
         return InviteUserResponse.builder()
                 .roomId(roomId)
@@ -158,6 +162,7 @@ public class RoomService {
                 .toList();
 
         //redis에 갱신
+        redisSynchronizer.synchronizeUser(roomId, userIds);
 
         
         return userIds;
