@@ -26,46 +26,45 @@ public class RoomValidationService {
 
     public void validateIsUserInvitedItselves(final Long userId, final List<Long> otherUserIds) {
         if (otherUserIds.contains(userId)) {
-            throw new RuntimeException("자신을 초대할 수 없습니다.");
+            throw new RuntimeException("YOU CANNOT INVITE YOURSELF.");
         }
     }
 
     public void validateIsUserInvitedNoOne(final List<Long> otherUserIds) {
         if (otherUserIds == null || otherUserIds.isEmpty()) {
-            throw new RuntimeException("최소 한 명 이상의 사용자를 추가해야 합니다.");
+            throw new RuntimeException("YOU MUST INVITE AT LEAST ONE USER.");
         }
     }
 
     public void validateIsFriends(final Long userId, final List<Long> otherUserIds) {
         if (!userService.isFriends(userId, otherUserIds)) {
-            throw new RuntimeException("친구가 아닌 사용자를 초대할 수 없습니다.");
+            throw new RuntimeException("YOU CANNOT INVITE USERS WHO ARE NOT YOUR FRIENDS.");
         }
     }
 
-    public void validateIsRoomExist(final Room room){
-        if(room == null || room.getDeletedAt() != null){
-            throw new RuntimeException("존재하지 않는 방입니다.");
+    public void validateIsRoomExist(final Room room) {
+        if (room == null || room.getDeletedAt() != null) {
+            throw new RuntimeException("ROOM DOES NOT EXIST.");
         }
     }
 
-    public void validateIsUserJoined(final RoomEntry roomEntry){
-        if(roomEntry == null || roomEntry.getLeftAt() != null){
-            throw new RuntimeException("방에 참여하지 않은 사용자입니다.");
+    public void validateIsUserJoined(final RoomEntry roomEntry) {
+        if (roomEntry == null || roomEntry.getLeftAt() != null) {
+            throw new RuntimeException("USER HAS NOT JOINED THE ROOM.");
         }
     }
 
-    public void validateIsUsersJoined(final List<RoomEntry> roomEntries){
+    public void validateIsUsersJoined(final List<RoomEntry> roomEntries) {
         roomEntries.forEach(roomEntry -> validateIsUserJoined(roomEntry));
     }
 
-    public void validateIsUserNotJoined(final RoomEntry roomEntry){
-        if(roomEntry != null && roomEntry.getLeftAt() == null){
-            throw new RuntimeException("이미 방에 참여한 사용자입니다.");
+    public void validateIsUserNotJoined(final RoomEntry roomEntry) {
+        if (roomEntry != null && roomEntry.getLeftAt() == null) {
+            throw new RuntimeException("USER HAS ALREADY JOINED THE ROOM.");
         }
     }
 
-    public void validateIsUsersNotJoined(final List<RoomEntry> roomEntries){
+    public void validateIsUsersNotJoined(final List<RoomEntry> roomEntries) {
         roomEntries.forEach(roomEntry -> validateIsUserNotJoined(roomEntry));
     }
-    
 }

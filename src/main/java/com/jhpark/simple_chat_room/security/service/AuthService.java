@@ -58,7 +58,7 @@ public class AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return authentication;
         } else {
-            throw new RuntimeException("유효하지 않은 JWT 토큰입니다.");
+            throw new RuntimeException("INVALID JWT TOKEN");
         }
     }
 }

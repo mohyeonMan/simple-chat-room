@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -87,18 +88,17 @@ public class RoomService {
         roomEntryRepository.save(roomEntry);
 
         //redis에 갱신
+        redisSynchronizer.removeUser(roomId, currentUserId);
+        
 
         room.getEntries().stream()
                 .filter(entry -> entry.getLeftAt() == null)
                 .findAny()
                 .orElseGet(() -> {
                     room.setDeletedAt(LocalDateTime.now());
-                    return null; 
+                    redisSynchronizer.removeRoom(roomId);
+                    return null;
                 });
-
-        //redis에서 제거.
-
-        
 
     }
 
@@ -132,11 +132,12 @@ public class RoomService {
                     .joinedAt(LocalDateTime.now())
                     .build());
 
+            redisSynchronizer.addUser(roomId, roomEntry.getUserId());
+
             return roomEntry.getUserId();
         }).toList();
 
-        //redis에 추가해줄것.
-        redisSynchronizer.addUser(roomId, currentUserId);
+        
 
         return InviteUserResponse.builder()
                 .roomId(roomId)
@@ -161,10 +162,13 @@ public class RoomService {
                 .map(RoomEntry::getUserId)
                 .toList();
 
-        //redis에 갱신
         redisSynchronizer.synchronizeUser(roomId, userIds);
 
-        
         return userIds;
     }
+
+    public Set<String> getRedisParticipants(final Long roomId){
+        return redisSynchronizer.getRedisParticipants(roomId);
+    }
+
 }

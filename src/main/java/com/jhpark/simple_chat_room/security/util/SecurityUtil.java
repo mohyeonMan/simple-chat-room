@@ -12,7 +12,7 @@ public class SecurityUtil {
             return Long.parseLong((String)authentication.getPrincipal());
             
         }
-        throw new RuntimeException("인증되지 않은 사용자입니다.");
+        throw new RuntimeException("USER NOT AUTHORIZED.");
     }
 
     
