@@ -171,4 +171,13 @@ public class RoomService {
         return redisSynchronizer.getRedisParticipants(roomId);
     }
 
+    public boolean isParticipant(final Long roomId){
+        
+        final Long currentUserId = SecurityUtil.getCurrentUserId();
+
+        return roomEntryRepository.existsByRoomIdAndUserIdAndLeftAtIsNull(roomId, currentUserId);
+
+    }
+
+
 }

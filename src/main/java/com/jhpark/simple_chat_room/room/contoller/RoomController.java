@@ -65,4 +65,14 @@ public class RoomController {
         List<Long> participants = roomService.getParticipantsInRoom(roomId);
         return ResponseEntity.ok().body(participants);
     }
+
+    /**
+     * 방 참가 여부 조회
+     * @param roomId 방 ID
+     * @return 방 참가 여부
+     */
+    @GetMapping("/{roomId}/is-participant")
+    public ResponseEntity<Boolean> isParticipant(@PathVariable Long roomId){
+        return ResponseEntity.ok().body(roomService.isParticipant(roomId));
+    }
 }
