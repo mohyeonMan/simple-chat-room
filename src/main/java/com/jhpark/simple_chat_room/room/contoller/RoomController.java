@@ -72,7 +72,7 @@ public class RoomController {
      * @return 방 참가 여부
      */
     @GetMapping("/{roomId}/is-participant")
-    public ResponseEntity<Boolean> isParticipant(@PathVariable Long roomId){
+    public ResponseEntity<Boolean> isParticipant(@PathVariable(name = "roomId") Long roomId){
         return ResponseEntity.ok().body(roomService.isParticipant(roomId));
     }
 }
