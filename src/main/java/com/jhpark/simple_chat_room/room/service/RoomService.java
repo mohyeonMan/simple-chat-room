@@ -84,13 +84,12 @@ public class RoomService {
                 .orElse(null);
         validationService.validateIsUserJoined(roomEntry);
 
-        roomEntry.setLeftAt(LocalDateTime.now());
+        roomEntry.leaveRoom();
         roomEntryRepository.save(roomEntry);
 
         //redis에 갱신
         redisSynchronizer.removeUser(roomId, currentUserId);
         
-
         room.getEntries().stream()
                 .filter(entry -> entry.getLeftAt() == null)
                 .findAny()

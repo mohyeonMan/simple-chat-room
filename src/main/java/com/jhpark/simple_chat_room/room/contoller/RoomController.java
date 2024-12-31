@@ -61,7 +61,7 @@ public class RoomController {
      * @return 참가자 ID 리스트
      */
     @GetMapping("/{roomId}/participants")
-    public ResponseEntity<List<Long>> getParticipantsInRoom(@PathVariable Long roomId) {
+    public ResponseEntity<List<Long>> getParticipantsInRoom(@PathVariable(name = "roomId") Long roomId) {
         List<Long> participants = roomService.getParticipantsInRoom(roomId);
         return ResponseEntity.ok().body(participants);
     }

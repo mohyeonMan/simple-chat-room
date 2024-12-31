@@ -1,7 +1,8 @@
-package com.jhpark.simple_chat_room.room.entity;
-
+package com.jhpark.simple_chat_room.message.entity;
 
 import java.time.LocalDateTime;
+
+import com.jhpark.simple_chat_room.room.entity.Room;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,8 +23,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "room_entries")
-public class RoomEntry {
+@Table(name = "messages")
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,17 +34,20 @@ public class RoomEntry {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @Column(nullable = false)
-    private Long userId;
+    @Column(name = "user_id", nullable = false)
+    private Long senderId;
 
     @Column(nullable = false)
-    private LocalDateTime joinedAt;
+    private String content;
 
-    @Column(nullable = true)
-    private LocalDateTime leftAt;
+    @Column(name = "deleted_at", nullable = true)
+    private LocalDateTime deletedAt;
 
-    public void leaveRoom(){
-        this.leftAt = LocalDateTime.now();
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+
+    public void deleteMessage(){
+        this.deletedAt = LocalDateTime.now();
     }
 
 }

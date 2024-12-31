@@ -18,6 +18,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.jhpark.simple_chat_room.message.entity.Message;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -43,4 +45,10 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
     @Default
     private List<RoomEntry> entries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @Default
+    private List<Message> messages = new ArrayList<>();
+
+    
 }

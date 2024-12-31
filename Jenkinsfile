@@ -94,9 +94,9 @@ pipeline {
         cleanWs()
     }
     success {
-        echo 'Pipeline completed successfully!'
-        echo 'Pruning Docker images older than 24 hours...'
-        sh 'docker image prune -a -f --filter "until=24h"'
+       echo 'Pipeline completed successfully!'
+        echo 'Pruning all dangling Docker images...'
+        sh 'docker image prune -f'
     }
     failure {
         echo 'Pipeline failed. Please check the logs.'
