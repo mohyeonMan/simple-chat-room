@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -17,17 +16,17 @@ public class MessageService {
     private final MessageRepository messageRepository;
 
     @Transactional
-    public void deleteMessage(Long messageId) {
+    public void deleteMessage(final Long messageId) {
         final Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new RuntimeException("MESSAGE NOT FOUND : messageId="+messageId));
         message.deleteMessage();
     }
 
-    public Page<Message> getMessagesByRoomId(Long roomId, Pageable pageable) {
+    public Page<Message> getMessagesByRoomId(final Long roomId, final Pageable pageable) {
         return messageRepository.findByRoomIdAndDeletedAtIsNull(roomId, pageable);
     }
 
-    public Message getMessageById(Long messageId) {
+    public Message getMessageById(final Long messageId) {
         return messageRepository.findById(messageId)
                 .orElseThrow(() -> new RuntimeException("MESSAGE NOT FOUND : messageId="+messageId));
     }
